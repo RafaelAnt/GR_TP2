@@ -61,6 +61,7 @@ public class MainFrame extends javax.swing.JFrame {
     private boolean isRunning;
     private static TimeSeries dataIN;
     private static TimeSeries dataOUT;
+    private double lastIn, lastOut;
 
     /**
      * Creates new form MainFrame
@@ -70,10 +71,9 @@ public class MainFrame extends javax.swing.JFrame {
 
         this.snmp = new InAndOut();
         this.isRunning = false;
+        this.lastIn = 0;
+        this.lastOut = 0;
 
-        
-
-       
     }
 
     /**
@@ -109,7 +109,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         t_ip.setText("127.0.0.1");
 
-        t_port.setText("6666");
+        t_port.setText("161");
 
         jLabel1.setText("IP:");
 
@@ -213,10 +213,10 @@ public class MainFrame extends javax.swing.JFrame {
             return;
         }
         isRunning = true;
-        
-        dataIN = new TimeSeries("In" );
-        dataOUT = new TimeSeries("OUT");
-        
+
+        dataIN = new TimeSeries("In");
+        dataOUT = new TimeSeries("Out");
+
         chartUpdate chartUp = new chartUpdate();
         new Thread(chartUp).start();
 
@@ -224,24 +224,23 @@ public class MainFrame extends javax.swing.JFrame {
         dataset.addSeries(dataIN);
         dataset.addSeries(dataOUT);
         JFreeChart chart = ChartFactory.createTimeSeriesChart(
-                null,       // title
-                "Time",     // x-axis graf
-                "PDU's",    // y-axis graf
-                dataset,    // data
-                true,       // create legend?
-                false,      // generate tooltips?
-                false       // generate URLs?
+                null, // title
+                "Time", // x-axis graf
+                "PDU's", // y-axis graf
+                dataset, // data
+                true, // create legend?
+                false, // generate tooltips?
+                false // generate URLs?
         );
-        
-                    
+
         final XYPlot plot = chart.getXYPlot();
         ValueAxis axis = plot.getDomainAxis();
         axis.setAutoRange(true);
-        axis.setFixedAutoRange(900000.0); 
+        axis.setFixedAutoRange(900000.0);
         //900 000 milisegundos = 15 min
         //300 000 milisegundos = 5 min
         // 60 000 milisegundos = 1 min
-        
+
         ChartPanel graf = new ChartPanel(chart);
         panel_graphic.setLayout(new java.awt.BorderLayout());
         panel_graphic.add(graf, BorderLayout.CENTER);
@@ -305,9 +304,9 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
-    }  
+    }
 
- class chartUpdate implements Runnable {
+    class chartUpdate implements Runnable {
 
         public void run() {
             exec = Executors.newSingleThreadScheduledExecutor();
@@ -316,18 +315,22 @@ public class MainFrame extends javax.swing.JFrame {
                 public void run() {
                     try {
                         snmp.loadValues(t_ip.getText(), t_port.getText());
-                        
-                        l_in.setText(Double.toString(snmp.getIn()));
-                        l_out.setText(Double.toString(snmp.getOut()));
+
+                        l_in.setText(Double.toString(snmp.getIn() - lastIn));
+                        l_out.setText(Double.toString(snmp.getOut() - lastOut));
 
                         //System.out.println("Loaded Value!");
-                        dataIN.addOrUpdate(new Second(), snmp.getIn());
-                        dataOUT.addOrUpdate(new Second(), snmp.getOut());
+                        dataIN.addOrUpdate(new Second(), snmp.getIn()  - lastIn);
+                        dataOUT.addOrUpdate(new Second(), snmp.getOut()  - lastOut);
+                        
+                        lastIn=snmp.getIn();
+                        lastOut=snmp.getOut();
+                        
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(new Frame(), "Could not Connect!", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
-            }, 0, 30, TimeUnit.SECONDS);
+            }, 0, 60, TimeUnit.SECONDS);
         }
     }
 
