@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 import SNMP.InAndOut;
 import SNMP.SNMPManager;
@@ -52,7 +47,7 @@ import org.jfree.data.time.TimeSeriesCollection;
 
 /**
  *
- * @author Rafael
+ * @author Rafael Antunes
  */
 public class MainFrame extends javax.swing.JFrame {
 
@@ -63,9 +58,7 @@ public class MainFrame extends javax.swing.JFrame {
     private static TimeSeries dataOUT;
     private double lastIn, lastOut;
 
-    /**
-     * Creates new form MainFrame
-     */
+
     public MainFrame() {
         initComponents();
 
@@ -269,7 +262,7 @@ public class MainFrame extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -322,10 +315,10 @@ public class MainFrame extends javax.swing.JFrame {
                         //System.out.println("Loaded Value!");
                         dataIN.addOrUpdate(new Second(), snmp.getIn()  - lastIn);
                         dataOUT.addOrUpdate(new Second(), snmp.getOut()  - lastOut);
-                        
+
                         lastIn=snmp.getIn();
                         lastOut=snmp.getOut();
-                        
+
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(new Frame(), "Could not Connect!", "Error", JOptionPane.ERROR_MESSAGE);
                     }

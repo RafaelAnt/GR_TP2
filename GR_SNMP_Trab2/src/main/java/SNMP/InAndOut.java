@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package SNMP;
 
 import java.awt.Frame;
@@ -12,7 +8,7 @@ import org.snmp4j.smi.OID;
 
 /**
  *
- * @author rafael
+ * @author Rafael Antunes
  */
 public class InAndOut {
 
@@ -33,10 +29,6 @@ public class InAndOut {
         this.in = in;
         this.out = out;
     }
-
-    /*public void run() {
-        System.out.println("timer working");
-    }**/
 
     public double getIn() {
         return this.in;
@@ -67,20 +59,12 @@ public class InAndOut {
         String IPin = null;
         String IPout = null;
 
-        //try {
+        String host = IP.concat("/").concat(port);
+        SNMPManager client = new SNMPManager(host);
+        client.start();
 
-            String host = IP.concat("/").concat(port);
-            SNMPManager client = new SNMPManager(host);
-            client.start();
-
-            //String sysDescr = client.getAsString(new OID(".1.3.6.1.2.1.1.1.0"));
-            IPin = client.getAsString(new OID("1.3.6.1.2.1.4.31.1.1.3.1"));
-            IPout = client.getAsString(new OID("1.3.6.1.2.1.4.31.1.1.30.1"));
-
-        /*} catch (Exception ex) {
-            JOptionPane.showMessageDialog(new Frame(), "Fatal Error!", "Fatal Error", JOptionPane.ERROR_MESSAGE);
-            System.exit(0);
-        }*/
+        IPin = client.getAsString(new OID("1.3.6.1.2.1.4.31.1.1.3.1"));
+        IPout = client.getAsString(new OID("1.3.6.1.2.1.4.31.1.1.30.1"));
 
         this.setIn(IPin);
         this.setOut(IPout);

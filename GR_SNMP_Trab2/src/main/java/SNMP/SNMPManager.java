@@ -21,21 +21,16 @@ public class SNMPManager {
     Snmp snmp = null;
     String address = null;
 
-    /**
-     * Constructor
-     *
-     * @param add
-     */
+
     public SNMPManager(String add) {
         address = add;
     }
 
-    /*public static void main(String[] args) throws IOException {
-/**
-* Port 161 is used for Read and Other operations
-* Port 162 is used for the trap generation
-     */
-//}
+    /*
+    * Port 161 is used for Read and Other operations
+    * Port 162 is used for the trap generation
+    */
+
     /**
      * Start the Snmp session. If you forget the listen() method you will not
      * get any answers because the communication is asynchronous and the
